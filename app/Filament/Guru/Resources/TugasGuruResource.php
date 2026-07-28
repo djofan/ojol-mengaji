@@ -77,7 +77,7 @@ class TugasGuruResource extends Resource
 
                         Select::make('group_ids')
                             ->label('Kirim ke Kelompok')
-                            ->options(fn () => \App\Models\Group::where('program', Auth::user()->program)->pluck('name', 'id'))
+                            ->options(fn () => \App\Models\Group::pluck('name', 'id'))
                             ->multiple()
                             ->required()
                             ->preload()
@@ -86,7 +86,6 @@ class TugasGuruResource extends Resource
                                 $component->state($record?->groups?->pluck('id')->toArray() ?? []);
                             })
                             ->placeholder('Pilih satu atau lebih kelompok')
-                            ->helperText('Kamu cuma bisa kirim tugas ke kelompok se-program kamu (' . (Auth::user()?->programLabel() ?? '-') . ')')
                             ->columnSpanFull(),
 
                         DateTimePicker::make('deadline')
@@ -100,7 +99,6 @@ class TugasGuruResource extends Resource
                             ->label('Guru Lain yang Bisa Approve/Reject')
                             ->options(fn () => User::where('role', 'guru')
                                 ->where('id', '!=', Auth::id())
-                                ->where('program', Auth::user()->program)
                                 ->pluck('name', 'id'))
                             ->multiple()
                             ->preload()
@@ -109,7 +107,7 @@ class TugasGuruResource extends Resource
                                 $component->state($record?->approvers?->pluck('id')->toArray() ?? []);
                             })
                             ->placeholder('Opsional, kosongkan kalau cuma kamu yang review')
-                            ->helperText('Cuma guru se-program (' . (Auth::user()?->programLabel() ?? '-') . ') yang bisa dipilih jadi approver'),
+                            ->helperText('Guru lain yang bisa dipilih jadi approver'),
 
                     ])->columns(2),
 

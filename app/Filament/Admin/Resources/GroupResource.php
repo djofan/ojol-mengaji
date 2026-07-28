@@ -5,7 +5,6 @@ namespace App\Filament\Admin\Resources;
 use App\Filament\Admin\Resources\GroupResource\Pages;
 use App\Models\Group;
 use BackedEnum;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Resources\Resource;
@@ -39,21 +38,12 @@ class GroupResource extends Resource
             ->components([
                 Section::make('Informasi Kelompok')
                     ->schema([
-                        Select::make('program')
-                            ->label('Program')
-                            ->options([
-                                'tanwir_qurani' => 'Tanwir Qurani (kode: TQ)',
-                                'ojol_mengaji'  => 'Ojol Mengaji (kode: OM)',
-                            ])
-                            ->required()
-                            ->native(false)
-                            ->helperText('Kode kelompok otomatis dibuat urut sesuai program: TQ001, TQ002, dst / OM001, OM002, dst'),
-
                         TextInput::make('name')
                             ->label('Nama Kelompok')
                             ->required()
                             ->maxLength(255)
-                            ->placeholder('Contoh: Kelompok Tanwir Qurani'),
+                            ->placeholder('Contoh: Kelompok Ojol Mengaji 1')
+                            ->helperText('Kode kelompok otomatis dibuat urut: OM001, OM002, dst'),
 
                         Textarea::make('description')
                             ->label('Deskripsi')
@@ -77,16 +67,6 @@ class GroupResource extends Resource
                     ->label('Nama Kelompok')
                     ->searchable()
                     ->sortable(),
-
-                TextColumn::make('program')
-                    ->label('Program')
-                    ->formatStateUsing(fn (?string $state) => match ($state) {
-                        'ojol_mengaji'  => 'Ojol Mengaji',
-                        'tanwir_qurani' => 'Tanwir Qurani',
-                        default         => '-',
-                    })
-                    ->badge()
-                    ->color(fn (?string $state) => $state === 'ojol_mengaji' ? 'warning' : 'info'),
 
                 TextColumn::make('description')
                     ->label('Deskripsi')

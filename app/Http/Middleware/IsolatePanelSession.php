@@ -15,7 +15,7 @@ class IsolatePanelSession
 
         if (in_array($segment, ['admin', 'guru', 'peserta'])) {
             // Paksa nama cookie berubah sesuai panel yang sedang dibuka
-            config(['session.cookie' => 'tanwir_' . $segment . '_session']);
+            config(['session.cookie' => 'ojolmengaji_' . $segment . '_session']);
         }
 
         return $next($request);

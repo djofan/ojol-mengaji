@@ -21,7 +21,6 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class GuruPanelProvider extends PanelProvider
@@ -36,7 +35,7 @@ class GuruPanelProvider extends PanelProvider
             ->login(CodeLogin::class)
             ->colors(['primary' => Color::Teal])
             ->favicon(asset('favicon.ico'))
-            ->brandName(fn () => Auth::user()?->programLabel() ?? 'Tanwir Qurani')
+            ->brandName('Ojol Mengaji')
             ->discoverResources(in: app_path('Filament/Guru/Resources'), for: 'App\\Filament\\Guru\\Resources')
             ->discoverPages(in: app_path('Filament/Guru/Pages'), for: 'App\\Filament\\Guru\\Pages')
             ->discoverWidgets(in: app_path('Filament/Guru/Widgets'), for: 'App\\Filament\\Guru\\Widgets')

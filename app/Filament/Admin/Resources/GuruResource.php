@@ -56,18 +56,6 @@ class GuruResource extends Resource
                             ->required()
                             ->maxLength(255),
 
-                        Select::make('program')
-                            ->label('Program')
-                            ->options([
-                                'tanwir_qurani' => 'Tanwir Qurani',
-                                'ojol_mengaji'  => 'Ojol Mengaji',
-                            ])
-                            ->required()
-                            ->native(false)
-                            ->disabled(fn (string $operation) => $operation === 'edit')
-                            ->dehydrated()
-                            ->helperText('Program menentukan kode login & kelompok mana yang bisa dia kasih tugas. Ga bisa diubah setelah dibuat.'),
-
                         TextInput::make('code')
                             ->label('Kode Login')
                             ->disabled()
@@ -244,16 +232,6 @@ class GuruResource extends Resource
                     ->label('Nama')
                     ->searchable()
                     ->sortable(),
-
-                TextColumn::make('program')
-                    ->label('Program')
-                    ->formatStateUsing(fn (?string $state) => match ($state) {
-                        'ojol_mengaji'  => 'Ojol Mengaji',
-                        'tanwir_qurani' => 'Tanwir Qurani',
-                        default         => '-',
-                    })
-                    ->badge()
-                    ->color(fn (?string $state) => $state === 'ojol_mengaji' ? 'warning' : 'info'),
 
                 TextColumn::make('email')
                     ->label('Email')

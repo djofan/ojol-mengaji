@@ -18,7 +18,6 @@ class User extends Authenticatable implements FilamentUser
         'email',
         'password',
         'role',
-        'program',
         'status',
     ];
 
@@ -44,16 +43,16 @@ class User extends Authenticatable implements FilamentUser
                 return;
             }
 
-            $user->code = static::generateCode($user->role, $user->program);
+            $user->code = static::generateCode($user->role);
         });
     }
 
-    public static function generateCode(string $role, ?string $program): string
+    public static function generateCode(string $role): string
     {
         $rolePrefix    = $role === 'guru' ? 'G' : 'P';
-        $programPrefix = $program === 'ojol_mengaji' ? 'OM' : 'TQ';
+        $programPrefix = 'OM';
 
-        $count = static::where('role', $role)->where('program', $program)->count();
+        $count = static::where('role', $role)->count();
 
         do {
             $count++;
@@ -86,15 +85,6 @@ class User extends Authenticatable implements FilamentUser
     public function isAdmin(): bool   { return $this->role === 'admin'; }
     public function isGuru(): bool    { return $this->role === 'guru'; }
     public function isPeserta(): bool { return $this->role === 'peserta'; }
-
-    public function programLabel(): string
-    {
-        return match ($this->program) {
-            'ojol_mengaji'  => 'Ojol Mengaji',
-            'tanwir_qurani' => 'Tanwir Qurani',
-            default         => 'Tanwir Qurani',
-        };
-    }
 
     public function canAccessPanel(Panel $panel): bool
     {

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name', 'Tanwir Qurani') }}</title>
+    <title>{{ config('app.name', 'Ojol Mengaji') }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Amiri:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
@@ -280,7 +280,7 @@
                 <img src="{{ asset('images/logo.png') }}" alt="LAZ SIP">
                 <div class="brand-divider"></div>
                 <div class="brand-text-group">
-                    <span class="brand-text">Tanwir Qurani</span>
+                    <span class="brand-text">Ojol Mengaji</span>
                     <span class="brand-sub">LAZ Solidaritas Insan Peduli</span>
                 </div>
             </a>
@@ -308,7 +308,7 @@
                     </h1>
 
                     <p class="hero-desc">
-                        Tanwir Qurani & Ojol Mengaji membantu peserta mengirim setoran, mengikuti kuis, dan memantau perkembangan — sementara guru/musyrif bisa meninjau dan memberi feedback tanpa ribet. Cukup satu akun, satu kode login.
+                        Ojol Mengaji membantu peserta mengirim setoran, mengikuti kuis, dan memantau perkembangan — sementara guru/musyrif bisa meninjau dan memberi feedback tanpa ribet. Cukup satu akun, satu kode login.
                     </p>
 
                     <div class="hero-actions">
@@ -320,10 +320,6 @@
                     </div>
 
                     <div class="hero-stats-row">
-                        <div>
-                            <div class="stat-num"><span>2</span></div>
-                            <div class="stat-label">Program Aktif</div>
-                        </div>
                         <div>
                             <div class="stat-num"><span>30+</span></div>
                             <div class="stat-label">Juz Terverifikasi</div>
@@ -413,7 +409,7 @@
             <div>
                 <div class="cta-tag">Bergabung Sekarang</div>
                 <h2 class="cta-title">Siap melanjutkan progres kamu?</h2>
-                <p class="cta-sub">Terbuka untuk peserta & guru aktif LAZ SIP di program Tanwir Qurani maupun Ojol Mengaji. Masuk dengan kode akun yang sudah didaftarkan admin.</p>
+                <p class="cta-sub">Terbuka untuk peserta & guru aktif LAZ SIP di program Ojol Mengaji. Masuk dengan kode akun yang sudah didaftarkan admin.</p>
             </div>
             <div class="cta-actions">
                 <a href="{{ url('/login') }}" class="btn-cta-white">Masuk Sekarang</a>
@@ -428,7 +424,7 @@
             <div class="footer-brand">
                 <img src="{{ asset('images/logo.png') }}" alt="LAZ SIP">
                 <div>
-                    <div class="footer-brand-name">Tanwir Qurani</div>
+                    <div class="footer-brand-name">Ojol Mengaji</div>
                     <div class="footer-sub">Program Digital LAZ Solidaritas Insan Peduli · Bogor, Jawa Barat</div>
                 </div>
             </div>

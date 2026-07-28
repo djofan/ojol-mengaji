@@ -13,18 +13,17 @@ class Group extends Model
         'name',
         'description',
         'code',
-        'program',
     ];
 
     protected static function booted(): void
     {
         static::creating(function (Group $group) {
-            if ($group->code || ! $group->program) {
+            if ($group->code) {
                 return;
             }
 
-            $prefix = $group->program === 'ojol_mengaji' ? 'OM' : 'TQ';
-            $count  = static::where('program', $group->program)->count();
+            $prefix = 'OM';
+            $count  = static::count();
 
             do {
                 $count++;
@@ -43,14 +42,5 @@ class Group extends Model
     public function tasks(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Task::class, 'task_group');
-    }
-
-    public function programLabel(): string
-    {
-        return match ($this->program) {
-            'ojol_mengaji'  => 'Ojol Mengaji',
-            'tanwir_qurani' => 'Tanwir Qurani',
-            default         => '-',
-        };
     }
 }

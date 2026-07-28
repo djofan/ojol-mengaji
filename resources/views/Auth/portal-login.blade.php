@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login — Tanwir Qurani</title>
+    <title>Login — Ojol Mengaji</title>
     <style>
         * { box-sizing: border-box; }
         body {
@@ -91,7 +91,7 @@
 <body>
     <div class="card">
         <div class="brand">
-            <h1>Tanwir Qurani</h1>
+            <h1>Ojol Mengaji</h1>
             <p>Masuk dengan kode akun kamu</p>
         </div>
 

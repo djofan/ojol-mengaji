@@ -23,7 +23,6 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class PesertaPanelProvider extends PanelProvider
@@ -38,7 +37,7 @@ class PesertaPanelProvider extends PanelProvider
             ->login(CodeLogin::class)
             ->colors(['primary' => Color::Amber])
             ->favicon(asset('favicon.ico'))
-            ->brandName(fn () => Auth::user()?->programLabel() ?? 'Tanwir Qurani')
+            ->brandName('Ojol Mengaji')
             ->discoverResources(in: app_path('Filament/Peserta/Resources'), for: 'App\\Filament\\Peserta\\Resources')
             ->discoverPages(in: app_path('Filament/Peserta/Pages'), for: 'App\\Filament\\Peserta\\Pages')
             ->discoverWidgets(in: app_path('Filament/Peserta/Widgets'), for: 'App\\Filament\\Peserta\\Widgets')

@@ -61,19 +61,6 @@ class PesertaResource extends Resource
                             ->required()
                             ->maxLength(255),
 
-                        Select::make('program')
-                            ->label('Program')
-                            ->options([
-                                'tanwir_qurani' => 'Tanwir Qurani',
-                                'ojol_mengaji'  => 'Ojol Mengaji',
-                            ])
-                            ->required()
-                            ->native(false)
-                            ->live()
-                            ->disabled(fn (string $operation) => $operation === 'edit')
-                            ->dehydrated()
-                            ->helperText('Program menentukan kode login & kelompoknya. Ga bisa diubah setelah dibuat.'),
-
                         TextInput::make('code')
                             ->label('Kode Login')
                             ->disabled()
@@ -121,9 +108,9 @@ class PesertaResource extends Resource
 
                         Select::make('group_id')
                             ->label('Kelompok')
-                            ->options(fn ($get) => Group::where('program', $get('../program'))->pluck('name', 'id'))
+                            ->options(fn () => Group::pluck('name', 'id'))
                             ->searchable()
-                            ->placeholder('Pilih kelompok (sesuai program yang dipilih di atas)')
+                            ->placeholder('Pilih kelompok')
                             ->native(false),
 
                         TextInput::make('tempat_mengajar')
@@ -278,16 +265,6 @@ class PesertaResource extends Resource
                     ->label('Nama')
                     ->searchable()
                     ->sortable(),
-
-                TextColumn::make('program')
-                    ->label('Program')
-                    ->formatStateUsing(fn (?string $state) => match ($state) {
-                        'ojol_mengaji'  => 'Ojol Mengaji',
-                        'tanwir_qurani' => 'Tanwir Qurani',
-                        default         => '-',
-                    })
-                    ->badge()
-                    ->color(fn (?string $state) => $state === 'ojol_mengaji' ? 'warning' : 'info'),
 
                 TextColumn::make('profile.group.name')
                     ->label('Kelompok')
