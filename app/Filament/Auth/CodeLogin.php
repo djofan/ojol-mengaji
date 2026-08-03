@@ -36,7 +36,7 @@ class CodeLogin extends BaseLogin
     {
         return TextInput::make('code')
             ->label('Kode Akun')
-            ->placeholder('Contoh: GTQ001')
+            ->placeholder('Contoh: GOM001')
             ->required()
             ->autocomplete()
             ->autofocus()
