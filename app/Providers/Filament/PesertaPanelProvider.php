@@ -36,6 +36,7 @@ class PesertaPanelProvider extends PanelProvider
             ->path('peserta')
             ->login(CodeLogin::class)
             ->colors(['primary' => Color::Amber])
+            ->darkMode(false)
             ->favicon(asset('favicon.ico'))
             ->brandName('Ojol Mengaji')
             ->discoverResources(in: app_path('Filament/Peserta/Resources'), for: 'App\\Filament\\Peserta\\Resources')

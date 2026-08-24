@@ -34,6 +34,7 @@ class GuruPanelProvider extends PanelProvider
             ->path('guru')
             ->login(CodeLogin::class)
             ->colors(['primary' => Color::Teal])
+            ->darkMode(false)
             ->favicon(asset('favicon.ico'))
             ->brandName('Ojol Mengaji')
             ->discoverResources(in: app_path('Filament/Guru/Resources'), for: 'App\\Filament\\Guru\\Resources')
