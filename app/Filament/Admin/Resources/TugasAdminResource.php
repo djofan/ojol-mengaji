@@ -14,8 +14,12 @@ use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
+use Filament\Actions\ViewAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Grid;
+use Filament\Infolists\Components\TextEntry;
 
 class TugasAdminResource extends Resource
 {
@@ -41,6 +45,44 @@ class TugasAdminResource extends Resource
         return $schema->components([]);
     }
 
+    public static function infolist(Schema $schema): Schema
+    {
+        return $schema
+            // Perbaikan 2: Gunakan method ->components() pada instansiasi schema terluar
+            ->components([
+                Section::make('Informasi Tugas')
+                    ->description('Detail dari tugas yang diberikan.')
+                    ->schema([ // Di dalam layout komponen, method ->schema() tetap digunakan
+                        TextEntry::make('title')
+                            ->label('Judul Tugas')
+                            ->weight('bold'),
+                            
+                        TextEntry::make('description') 
+                            ->label('Deskripsi Tugas')
+                            ->html() 
+                            ->columnSpanFull(),
+
+                        Grid::make(2)->schema([
+                            TextEntry::make('deadline') 
+                                ->label('Batas Waktu')
+                                ->dateTime('d M Y, H:i')
+                                ->icon('heroicon-m-calendar'),
+                                
+                            TextEntry::make('status') 
+                                ->label('Status')
+                                ->badge()
+                                ->color(fn (string $state): string => match ($state) {
+                                    'aktif' => 'success',
+                                    'ditutup' => 'danger',
+                                    'menunggu' => 'warning',
+                                    default => 'gray',
+                                }),
+                        ]),
+                    ]),
+                    
+            ]);
+    }
+
     public static function table(Table $table): Table
     {
         return $table
@@ -49,13 +91,15 @@ class TugasAdminResource extends Resource
                     ->label('Judul Tugas')
                     ->searchable()
                     ->sortable()
-                    ->wrap(),
+                    ->wrap()
+                    ->toggleable(),
 
                 TextColumn::make('teacher.name')
                     ->label('Guru Pembuat')
                     ->searchable()
                     ->sortable()
-                    ->default('-'),
+                    ->default('-')
+                    ->toggleable(),
 
                 TextColumn::make('type')
                     ->label('Tipe')
@@ -71,38 +115,44 @@ class TugasAdminResource extends Resource
                         'video'      => 'warning',
                         'quiz'       => 'success',
                         default      => 'gray',
-                    }),
+                    })
+                    ->toggleable(),
 
                 TextColumn::make('google_form_url')
                     ->label('Link Kuis')
                     ->formatStateUsing(fn ($state) => $state ? 'Lihat Form' : '-')
                     ->url(fn (Task $record) => $record->google_form_url ?? null)
                     ->openUrlInNewTab()
-                    ->color('info'),
+                    ->color('info')
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('submissions_count')
                     ->label('Total Kumpul')
                     ->counts('submissions')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
 
                 TextColumn::make('submissions_pending_count')
-                    ->label('⏳ Pending')
+                    ->label(' Pending')
                     ->counts([
                         'submissions as submissions_pending_count' => fn (Builder $q) => $q->where('status', 'pending'),
                     ])
                     ->sortable()
                     ->color(fn ($state) => $state > 0 ? 'warning' : 'gray')
-                    ->badge(),
+                    ->badge()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('teacher.profile.nomor_hp')
                     ->label('WA Guru')
                     ->default('-')
-                    ->formatStateUsing(fn ($state) => $state !== '-' ? $state : '-'),
+                    ->formatStateUsing(fn ($state) => $state !== '-' ? $state : '-')
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('created_at')
                     ->label('Dibuat')
                     ->dateTime('d M Y')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 SelectFilter::make('type')
@@ -155,6 +205,7 @@ class TugasAdminResource extends Resource
                         return $phone && $pending > 0;
                     }),
 
+                ViewAction::make(),
                 DeleteAction::make(),
             ])
             ->bulkActions([
@@ -168,6 +219,7 @@ class TugasAdminResource extends Resource
     {
         return [
             'index' => Pages\ListTugasAdmins::route('/'),
+            'view'  => Pages\ViewTugasAdmin::route('/{record}'),
         ];
     }
 }

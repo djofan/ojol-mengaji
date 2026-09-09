@@ -13,6 +13,16 @@ class GuruStatsOverview extends BaseWidget
 {
     protected static bool $isLazy = false;
 
+    protected int | string | array $columnSpan = 'full';
+
+    protected function getColumns(): int | array
+    {
+        return [
+            'default' => 3,
+            'md' => 3,
+        ];
+    }
+
     protected function getStats(): array
     {
         $guruId = Auth::id();
@@ -29,17 +39,11 @@ class GuruStatsOverview extends BaseWidget
         $tugasSayaApprove = Task::where(fn (Builder $q) => $scopeTask($q))->count();
 
         return [
-            Stat::make('Butuh Diperiksa', $butuhPeriksa)
-                ->description('Tugas saya / yang saya approve')
-                ->color('warning'),
+            Stat::make('Butuh Diperiksa', $butuhPeriksa),
 
-            Stat::make('Tugas Saya', $tugasSaya)
-                ->description('Tugas yang saya buat')
-                ->color('success'),
+            Stat::make('Tugas Saya', $tugasSaya),
 
-            Stat::make('Total Bisa Saya Review', $tugasSayaApprove)
-                ->description('Tugas saya + jadi approver')
-                ->color('info'),
+            Stat::make('Total Direview', $tugasSayaApprove),
         ];
     }
 }

@@ -9,23 +9,24 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class AdminStatsOverview extends BaseWidget
 {
+    protected int | string | array $columnSpan = 'full';
+
+    protected function getColumns(): int | array
+    {
+        return [
+            'default' => 3,
+            'md' => 3,
+        ];
+    }
+
     protected function getStats(): array
     {
         return [
-            Stat::make('Total Guru Aktif', User::where('role', 'guru')->where('status', true)->count())
-                ->description('Guru yang sedang aktif')
-                ->descriptionIcon('heroicon-m-academic-cap')
-                ->color('success'),
+            Stat::make('Total Guru Aktif', User::where('role', 'guru')->where('status', true)->count()),
 
-            Stat::make('Total Peserta Aktif', User::where('role', 'peserta')->where('status', true)->count())
-                ->description('Peserta yang sedang aktif')
-                ->descriptionIcon('heroicon-m-users')
-                ->color('info'),
+            Stat::make('Total Peserta Aktif', User::where('role', 'peserta')->where('status', true)->count()),
 
-            Stat::make('Total Tugas Berjalan', Task::count())
-                ->description('Semua tugas yang terpublish')
-                ->descriptionIcon('heroicon-m-clipboard-document-list')
-                ->color('warning'),
+            Stat::make('Total Tugas Berjalan', Task::count()),
         ];
     }
 }

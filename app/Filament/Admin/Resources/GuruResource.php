@@ -10,6 +10,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -226,21 +227,25 @@ class GuruResource extends Resource
                     ->color('success')
                     ->copyable()
                     ->copyMessage('Kode disalin!')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(),
 
                 TextColumn::make('name')
                     ->label('Nama')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
 
                 TextColumn::make('email')
                     ->label('Email')
                     ->default('-')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('profile.nomor_hp')
                     ->label('No. HP')
-                    ->default('-'),
+                    ->default('-')
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('profile.gender')
                     ->label('Kelamin')
@@ -254,24 +259,29 @@ class GuruResource extends Resource
                         'laki-laki' => 'info',
                         'perempuan' => 'danger',
                         default     => 'gray',
-                    }),
+                    })
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('profile.kelurahan_nama')
                     ->label('Kelurahan')
-                    ->default('-'),
+                    ->default('-')
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('tasks_count')
                     ->label('Jumlah Tugas')
                     ->counts('tasks')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 ToggleColumn::make('status')
-                    ->label('Status Aktif'),
+                    ->label('Status Aktif')
+                    ->toggleable(),
 
                 TextColumn::make('created_at')
                     ->label('Dibuat')
                     ->dateTime('d M Y')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 TernaryFilter::make('status')
@@ -280,6 +290,7 @@ class GuruResource extends Resource
                     ->falseLabel('Nonaktif'),
             ])
             ->actions([
+                ViewAction::make(),
                 EditAction::make(),
                 DeleteAction::make(),
             ])
@@ -295,6 +306,7 @@ class GuruResource extends Resource
         return [
             'index'  => Pages\ListGurus::route('/'),
             'create' => Pages\CreateGuru::route('/create'),
+            'view'   => Pages\ViewGuru::route('/{record}'),
             'edit'   => Pages\EditGuru::route('/{record}/edit'),
         ];
     }

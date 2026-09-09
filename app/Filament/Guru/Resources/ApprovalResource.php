@@ -7,6 +7,8 @@ use App\Models\SubmissionLog;
 use App\Models\Task;
 use BackedEnum;
 use Filament\Actions\Action;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Textarea;
 use Filament\Infolists\Components\TextEntry;
@@ -144,107 +146,91 @@ class ApprovalResource extends Resource
     {
         return $table
             ->columns([
+                // --- KOLOM UTAMA (Selalu Tampil) ---
                 TextColumn::make('student.name')
-                    ->label('Nama Peserta')
+                    ->label('Nama Siswa')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->weight('bold'),
 
                 TextColumn::make('task.title')
                     ->label('Judul Tugas')
                     ->searchable()
-                    ->wrap(),
+                    ->sortable()
+                    ->limit(30),
 
-                TextColumn::make('task.teacher.name')
-                    ->label('Guru Pembuat')
-                    ->searchable()
+                TextColumn::make('status')
+                    ->label('Status')
                     ->badge()
-                    ->color(fn (Submission $record) => $record->task?->teacher_id === Auth::id() ? 'success' : 'gray'),
-
-                TextColumn::make('task.type')
-                    ->label('Tipe')
-                    ->formatStateUsing(fn ($state) => match ($state) {
-                        'voice_note' => '🎵 Voice Note',
-                        'video'      => '🎬 Video',
-                        'quiz'       => '📝 Kuis',
-                        default      => $state,
+                    ->color(fn (string $state): string => match ($state) {
+                        'approved' => 'success',
+                        'rejected' => 'danger',
+                        'pending'  => 'warning',
+                        default    => 'gray',
                     })
-                    ->badge()
-                    ->color(fn ($state) => match ($state) {
-                        'voice_note' => 'info',
-                        'video'      => 'warning',
-                        'quiz'       => 'success',
-                        default      => 'gray',
+                    ->formatStateUsing(fn ($state) => match ($state) {
+                        'approved' => '✅ Disetujui',
+                        'rejected' => '❌ Ditolak',
+                        'pending'  => '⏳ Menunggu',
+                        default    => $state,
                     }),
+
+                // --- KOLOM SEKUNDER (Bisa di-toggle / disembunyikan default) ---
+                TextColumn::make('file_path')
+                    ->label('File Tugas')
+                    ->formatStateUsing(fn ($state) => $state ? '📄 Lihat File' : 'Tidak ada file')
+                    ->url(fn ($record) => $record->file_path ? asset('storage/' . $record->file_path) : null)
+                    ->openUrlInNewTab()
+                    ->color('info')
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('attempts_count')
-                    ->label('Percobaan'),
+                    ->label('Percobaan ke-')
+                    ->sortable()
+                    ->alignCenter()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('created_at')
-                    ->label('Dikumpulkan')
+                    ->label('Waktu Kumpul')
                     ->dateTime('d M Y, H:i')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                SelectFilter::make('task_id')
-                    ->label('Filter Tugas')
-                    ->options(Task::pluck('title', 'id')),
-
-                SelectFilter::make('type')
-                    ->label('Tipe Tugas')
+                SelectFilter::make('status')
+                    ->label('Filter Status')
                     ->options([
-                        'voice_note' => '🎵 Voice Note',
-                        'video'      => '🎬 Video',
-                        'quiz'       => '📝 Kuis',
-                    ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        if (blank($data['value'])) return $query;
-                        return $query->whereHas('task', fn ($q) => $q->where('type', $data['value']));
-                    }),
+                        'pending'  => '⏳ Menunggu',
+                        'approved' => '✅ Disetujui',
+                        'rejected' => '❌ Ditolak',
+                    ]),
             ])
             ->actions([
-                ViewAction::make()->label('Review'),
-
+                // Tombol Cepat untuk Approve langsung dari tabel (Opsional)
                 Action::make('approve')
-                    ->label('Approve')
+                    ->label('Setujui')
+                    ->icon('heroicon-m-check')
                     ->color('success')
-                    ->icon('heroicon-o-check-circle')
                     ->requiresConfirmation()
-                    ->modalHeading('Setujui Tugas Ini?')
-                    ->modalDescription('Tugas peserta akan ditandai sebagai selesai.')
-                    ->action(function (Submission $record) {
-                        $record->update(['status' => 'approved']);
-                        SubmissionLog::create([
-                            'submission_id'  => $record->id,
-                            'teacher_id'     => Auth::id(),
-                            'status_at_time' => 'approved',
-                            'feedback'       => 'Tugas disetujui.',
-                            'attempt_number' => $record->attempts_count,
-                        ]);
-                    }),
+                    ->action(fn ($record) => $record->update(['status' => 'approved']))
+                    ->visible(fn ($record) => $record->status === 'pending'),
 
+                // Tombol Cepat untuk Reject langsung dari tabel (Opsional)
                 Action::make('reject')
-                    ->label('Reject')
+                    ->label('Tolak')
+                    ->icon('heroicon-m-x-mark')
                     ->color('danger')
-                    ->icon('heroicon-o-x-circle')
-                    ->form([
-                        Textarea::make('feedback')
-                            ->label('Alasan Penolakan')
-                            ->required()
-                            ->rows(4)
-                            ->placeholder('Contoh: Screenshot tidak terbaca, jawaban salah...'),
-                    ])
-                    ->action(function (Submission $record, array $data) {
-                        $record->update(['status' => 'rejected']);
-                        SubmissionLog::create([
-                            'submission_id'  => $record->id,
-                            'teacher_id'     => Auth::id(),
-                            'status_at_time' => 'rejected',
-                            'feedback'       => $data['feedback'],
-                            'attempt_number' => $record->attempts_count,
-                        ]);
-                    }),
+                    ->requiresConfirmation()
+                    ->action(fn ($record) => $record->update(['status' => 'rejected']))
+                    ->visible(fn ($record) => $record->status === 'pending'),
+
+                ViewAction::make(),
             ])
-            ->bulkActions([]);
+            ->bulkActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
+            ]);
     }
 
     public static function getPages(): array

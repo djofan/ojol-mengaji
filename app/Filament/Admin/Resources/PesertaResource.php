@@ -251,7 +251,8 @@ class PesertaResource extends Resource
                     ->url(fn ($record) => $record->profile?->foto
                         ? asset('storage/' . $record->profile->foto)
                         : null)
-                    ->openUrlInNewTab(),
+                    ->openUrlInNewTab()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('code')
                     ->label('Kode Login')
@@ -259,26 +260,31 @@ class PesertaResource extends Resource
                     ->color('success')
                     ->copyable()
                     ->copyMessage('Kode disalin!')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('name')
                     ->label('Nama')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
 
                 TextColumn::make('profile.group.name')
                     ->label('Kelompok')
                     ->default('-')
                     ->badge()
-                    ->color('info'),
+                    ->color('info')
+                    ->toggleable(),
 
                 TextColumn::make('email')
                     ->label('Email')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('profile.nomor_hp')
                     ->label('No. HP')
-                    ->default('-'),
+                    ->default('-')
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('profile.gender')
                     ->label('Kelamin')
@@ -292,26 +298,31 @@ class PesertaResource extends Resource
                         'laki-laki' => 'info',
                         'perempuan' => 'danger',
                         default     => 'gray',
-                    }),
+                    })
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('profile.tempat_mengajar')
                     ->label('Tempat Mengajar')
-                    ->default('-'),
+                    ->default('-')
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('submissions_count')
                     ->label('Tugas Dikumpul')
                     ->counts('submissions')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 ToggleColumn::make('status')
                     ->label('Status Aktif')
                     ->onColor('success')
-                    ->offColor('danger'),
+                    ->offColor('danger')
+                    ->toggleable(),
 
                 TextColumn::make('created_at')
                     ->label('Didaftarkan')
                     ->dateTime('d M Y')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 TernaryFilter::make('status')

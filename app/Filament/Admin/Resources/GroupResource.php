@@ -11,10 +11,12 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Filament\Actions\EditAction;
+use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
-use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -61,36 +63,43 @@ class GroupResource extends Resource
                     ->label('Kode')
                     ->badge()
                     ->color('success')
-                    ->copyable(),
+                    ->copyable()
+                    ->toggleable(),
 
                 TextColumn::make('name')
                     ->label('Nama Kelompok')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
 
                 TextColumn::make('description')
                     ->label('Deskripsi')
                     ->default('-')
-                    ->limit(50),
+                    ->limit(50)
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('profiles_count')
                     ->label('Jumlah Anggota')
                     ->counts('profiles')
                     ->sortable()
                     ->badge()
-                    ->color('info'),
+                    ->color('info')
+                    ->toggleable(),
 
                 TextColumn::make('tasks_count')
                     ->label('Tugas Terkirim')
                     ->counts('tasks')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('created_at')
                     ->label('Dibuat')
                     ->dateTime('d M Y')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->actions([
+                ViewAction::make(),
                 EditAction::make(),
                 DeleteAction::make(),
             ])
@@ -106,6 +115,7 @@ class GroupResource extends Resource
         return [
             'index'  => Pages\ListGroups::route('/'),
             'create' => Pages\CreateGroup::route('/create'),
+            'view'   => Pages\ViewGroup::route('/{record}'),
             'edit'   => Pages\EditGroup::route('/{record}/edit'),
         ];
     }
