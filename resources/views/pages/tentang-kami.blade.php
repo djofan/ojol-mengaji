@@ -1,4 +1,4 @@
-@extends('layouts.site')
+@extends('site.layout')
 
 @section('title', 'Tentang Kami')
 
