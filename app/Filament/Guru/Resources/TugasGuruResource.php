@@ -11,6 +11,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Repeater;
@@ -169,131 +170,58 @@ class TugasGuruResource extends Resource
     {
         return $table
             ->columns([
+                // --- KOLOM UTAMA (Selalu Tampil) ---
                 TextColumn::make('title')
                     ->label('Judul Tugas')
                     ->searchable()
                     ->sortable()
-                    ->wrap(),
-
-                TextColumn::make('groups.name')
-                    ->label('Kelompok')
-                    ->badge()
-                    ->separator(',')
-                    ->color('info'),
-
-                TextColumn::make('teacher.name')
-                    ->label('Dibuat Oleh')
-                    ->searchable()
-                    ->sortable()
-                    ->badge()
-                    ->color(fn (Task $record) => $record->teacher_id === Auth::id() ? 'success' : 'gray'),
+                    ->limit(30), // Batasi panjang teks agar rapi
 
                 TextColumn::make('type')
                     ->label('Tipe')
+                    ->badge()
                     ->formatStateUsing(fn ($state) => match ($state) {
                         'voice_note' => '🎵 Voice Note',
                         'video'      => '🎬 Video',
                         'quiz'       => '📝 Kuis',
                         default      => $state,
-                    })
-                    ->badge()
-                    ->color(fn ($state) => match ($state) {
-                        'voice_note' => 'info',
-                        'video'      => 'warning',
-                        'quiz'       => 'success',
-                        default      => 'gray',
                     }),
 
-                TextColumn::make('questions_count')
-                    ->label('Jumlah Soal')
-                    ->counts('questions')
-                    ->formatStateUsing(fn ($state, Task $record) => $record->type === 'quiz' ? "{$state} soal" : '-')
-                    ->color('info'),
+                TextColumn::make('deadline')
+                    ->label('Batas Waktu')
+                    ->dateTime('d M Y, H:i')
+                    ->sortable(),
 
                 TextColumn::make('submissions_count')
-                    ->label('Dikumpulkan')
+                    ->label('Total Kumpul')
                     ->counts('submissions')
                     ->sortable(),
 
-                TextColumn::make('submissions_pending_count')
-                    ->label('Pending')
-                    ->counts(['submissions as submissions_pending_count' => fn (Builder $q) => $q->where('status', 'pending')])
-                    ->sortable(),
+                // --- KOLOM SEKUNDER (Bisa disembunyikan / di-toggle) ---
+                TextColumn::make('description')
+                    ->label('Deskripsi')
+                    ->limit(50)
+                    ->toggleable(isToggledHiddenByDefault: true), // Tersembunyi default
 
-                TextColumn::make('deadline')
-                    ->label('Deadline')
-                    ->dateTime('d M Y, H:i')
-                    ->placeholder('Bebas')
-                    ->badge()
-                    ->color(fn (Task $record) => $record->isLocked() ? 'danger' : ($record->deadline ? 'success' : 'gray'))
-                    ->formatStateUsing(fn ($state, Task $record) => $state ? \Illuminate\Support\Carbon::parse($state)->format('d M Y, H:i') . ($record->isLocked() ? ' 🔒' : '') : 'Bebas')
-                    ->sortable(),
+                TextColumn::make('google_form_url')
+                    ->label('Link Kuis')
+                    ->url(fn ($record) => $record->google_form_url)
+                    ->openUrlInNewTab()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('created_at')
-                    ->label('Dibuat')
+                    ->label('Dibuat Pada')
                     ->dateTime('d M Y')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                SelectFilter::make('type')
-                    ->label('Tipe Tugas')
-                    ->options([
-                        'voice_note' => '🎵 Voice Note',
-                        'video'      => '🎬 Video',
-                        'quiz'       => '📝 Kuis',
-                    ]),
-
-                SelectFilter::make('teacher_id')
-                    ->label('Filter Guru')
-                    ->options(
-                        User::where('role', 'guru')
-                            ->where('status', true)
-                            ->pluck('name', 'id')
-                    ),
+                // Tambahkan filter jika diperlukan
             ])
             ->actions([
-                Action::make('lihatHasilKuis')
-                    ->label('Hasil Kuis')
-                    ->icon('heroicon-o-chart-bar')
-                    ->color('success')
-                    ->visible(fn (Task $record) => $record->type === 'quiz' && $record->canBeReviewedBy(Auth::id()))
-                    ->url(fn (Task $record) => route('filament.guru.pages.tugas.{task}.hasil-kuis', ['task' => $record->id])),
-
-                Action::make('lihatHasilTugas')
-                    ->label('Hasil Tugas')
-                    ->icon('heroicon-o-chart-bar')
-                    ->color('success')
-                    ->visible(fn (Task $record) => in_array($record->type, ['video', 'voice_note']) && $record->canBeReviewedBy(Auth::id()))
-                    ->url(fn (Task $record) => route('filament.guru.pages.tugas.{task}.hasil-tugas', ['task' => $record->id])),
-
-                Action::make('extendDeadline')
-                    ->label('Perpanjang')
-                    ->icon('heroicon-o-clock')
-                    ->color('warning')
-                    ->visible(fn (Task $record) => $record->teacher_id === Auth::id() && $record->isLocked())
-                    ->schema([
-                        TextInput::make('hours')
-                            ->label('Tambah berapa jam?')
-                            ->numeric()
-                            ->required()
-                            ->minValue(1)
-                            ->maxValue(72)
-                            ->default(2)
-                            ->helperText('Murid yang ngumpul di jam tambahan ini otomatis ditandai "terlambat"'),
-                    ])
-                    ->action(function (Task $record, array $data) {
-                        $record->extendDeadline((int) $data['hours']);
-
-                        Notification::make()
-                            ->title('Deadline diperpanjang ' . $data['hours'] . ' jam')
-                            ->success()
-                            ->send();
-                    }),
-
-                EditAction::make()
-                    ->visible(fn (Task $record) => $record->teacher_id === Auth::id()),
-                DeleteAction::make()
-                    ->visible(fn (Task $record) => $record->teacher_id === Auth::id()),
+                ViewAction::make(),
+                EditAction::make(),
+                DeleteAction::make(),
             ])
             ->bulkActions([
                 BulkActionGroup::make([
@@ -307,6 +235,7 @@ class TugasGuruResource extends Resource
         return [
             'index'  => Pages\ListTugasGurus::route('/'),
             'create' => Pages\CreateTugasGuru::route('/create'),
+            'view'   => Pages\ViewTugasGuru::route('/{record}'),
             'edit'   => Pages\EditTugasGuru::route('/{record}/edit'),
         ];
     }

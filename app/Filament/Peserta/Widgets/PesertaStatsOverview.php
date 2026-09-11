@@ -12,6 +12,16 @@ class PesertaStatsOverview extends BaseWidget
 {
     protected static bool $isLazy = false;
 
+    protected int | string | array $columnSpan = 'full';
+
+    protected function getColumns(): int | array
+    {
+        return [
+            'default' => 2,
+            'md' => 4,
+        ];
+    }
+
     protected function getStats(): array
     {
         $student   = Auth::user();
@@ -39,21 +49,13 @@ class PesertaStatsOverview extends BaseWidget
             ->where('status', 'approved')->count();
 
         return [
-            Stat::make('Belum Dikerjakan', $belumDikerjakan)
-                ->description('Tugas yang belum disentuh')
-                ->color('gray'),
+            Stat::make('Belum Dikerjakan', $belumDikerjakan),
 
-            Stat::make('Menunggu Koreksi', $menunggu)
-                ->description('Sudah dikumpul, belum dinilai')
-                ->color('info'),
+            Stat::make('Menunggu Koreksi', $menunggu),
 
-            Stat::make('Harus Diulang', $harusUlang)
-                ->description('Ditolak guru, perlu diperbaiki')
-                ->color('danger'),
+            Stat::make('Harus Diulang', $harusUlang),
 
-            Stat::make('Selesai', $selesai)
-                ->description('Tugas yang sudah disetujui')
-                ->color('success'),
+            Stat::make('Selesai', $selesai),
         ];
     }
 }

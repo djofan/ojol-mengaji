@@ -34,24 +34,7 @@ class ViewPeserta extends ViewRecord
                 Section::make('Profil Utama')
                     ->schema([
                         Grid::make(2) 
-                        ->schema([
-                            
-                            Section::make()
-                                ->schema([
-                                    ImageEntry::make('profile.foto')
-                                        ->hiddenLabel()
-                                        ->height(200) 
-                                        ->width('100%') 
-                                        ->extraImgAttributes([
-                                            'style' => 'object-fit: cover; max-width: 200px;', 
-                                            'class' => 'mx-auto rounded-full shadow-lg border-4 border-gray-800'
-                                        ])
-                                        ->url(fn($record) => $record->profile?->foto
-                                            ? asset('storage/' . $record->profile->foto)
-                                            : null)
-                                        ->openUrlInNewTab(),
-                                ])
-                                ->columnSpan(1), 
+                        ->schema([ 
 
                             Section::make('Detail Akun')
                                 ->schema([

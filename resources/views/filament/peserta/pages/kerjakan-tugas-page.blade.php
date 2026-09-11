@@ -1,85 +1,68 @@
 <x-filament-panels::page>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
         .kerjakan-page * { font-family: 'Plus Jakarta Sans', sans-serif; }
 
         .task-hero {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #0f172a 100%);
+            background: #ffffff;
             border-radius: 20px; padding: 26px 28px;
             position: relative; overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.07);
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02), 0 2px 4px -1px rgba(0,0,0,0.02);
             margin-bottom: 0;
         }
-        .task-hero::before {
-            content:''; position:absolute; top:-70px; right:-70px;
-            width:220px; height:220px;
-            background: radial-gradient(circle, rgba(99,102,241,0.22) 0%, transparent 70%);
-            border-radius:50%; pointer-events:none;
-        }
-        .task-hero::after {
-            content:''; position:absolute; bottom:-50px; left:30px;
-            width:160px; height:160px;
-            background: radial-gradient(circle, rgba(34,211,238,0.10) 0%, transparent 70%);
-            border-radius:50%; pointer-events:none;
-        }
-        .hero-inner { position:relative; z-index:1; }
         .type-badge {
             display:inline-flex; align-items:center; gap:6px;
             padding:4px 14px; border-radius:999px;
             font-size:11.5px; font-weight:700;
         }
-        .badge-voice { background:rgba(99,102,241,0.2); color:#a5b4fc; border:1px solid rgba(99,102,241,0.3); }
-        .badge-video { background:rgba(251,146,60,0.2); color:#fdba74; border:1px solid rgba(251,146,60,0.3); }
-        .badge-quiz  { background:rgba(34,197,94,0.2);  color:#86efac; border:1px solid rgba(34,197,94,0.3); }
-        .hero-title  { font-size:20px; font-weight:800; color:#f1f5f9; line-height:1.3; margin:12px 0 3px; }
+        .badge-voice { background:#eff6ff; color:#2563eb; border:1px solid #dbeafe; }
+        .badge-video { background:#fff7ed; color:#c2410c; border:1px solid #ffedd5; }
+        .badge-quiz  { background:#f0fdf4; color:#16a34a; border:1px solid #bbf7d0; }
+        .hero-title  { font-size:20px; font-weight:800; color:#0f172a; line-height:1.3; margin:12px 0 3px; }
         .hero-teacher { font-size:13px; color:#64748b; }
-        .hero-teacher span { color:#94a3b8; }
+        .hero-teacher span { color:#0f172a; font-weight:600; }
         .hero-desc {
             margin-top:16px; padding:14px 18px;
-            background:rgba(255,255,255,0.04);
-            border:1px solid rgba(255,255,255,0.08); border-radius:12px;
+            background:#f8fafc;
+            border:1px solid #e2e8f0; border-radius:12px;
         }
         .hero-desc-label {
             font-size:10px; font-weight:700; letter-spacing:0.09em;
-            text-transform:uppercase; color:#475569; margin-bottom:5px;
+            text-transform:uppercase; color:#64748b; margin-bottom:5px;
         }
-        .hero-desc-text { font-size:13.5px; color:#94a3b8; line-height:1.65; }
+        .hero-desc-text { font-size:13.5px; color:#334155; line-height:1.65; }
         .hero-alert {
             display:flex; gap:10px; align-items:flex-start;
             margin-top:14px; padding:13px 15px;
-            background:rgba(239,68,68,0.10);
-            border:1px solid rgba(239,68,68,0.25); border-radius:12px;
+            background:#fef2f2;
+            border:1px solid #fecdd3; border-radius:12px;
         }
-        .hero-alert-title { font-size:13px; font-weight:700; color:#fca5a5; margin-bottom:3px; }
-        .hero-alert-body  { font-size:12.5px; color:#f87171; line-height:1.55; }
+        .hero-alert-title { font-size:13px; font-weight:700; color:#dc2626; margin-bottom:3px; }
+        .hero-alert-body  { font-size:12.5px; color:#ef4444; line-height:1.55; }
 
         .mode-tabs {
             display:grid; grid-template-columns:1fr 1fr;
             gap:6px; margin-bottom:20px;
             background:#f8fafc; border-radius:12px; padding:5px;
+            border: 1px solid #e2e8f0;
         }
-        .dark .mode-tabs { background:rgba(255,255,255,0.04); }
         .mode-tab-active {
-            background:#fff !important; color:#1e293b !important;
-            border-color:#fff !important;
-            box-shadow:0 1px 4px rgba(0,0,0,0.10) !important;
-        }
-        .dark .mode-tab-active {
-            background:#1e293b !important; color:#e2e8f0 !important;
-            border-color:#1e293b !important;
+            background:#fff !important; color:#0f172a !important;
+            border-color:#cbd5e1 !important;
+            box-shadow:0 1px 3px rgba(0,0,0,0.05) !important;
         }
 
         .rec-time {
             font-size:28px; font-weight:800; font-variant-numeric:tabular-nums;
             color:#1e293b; letter-spacing:0.03em;
         }
-        .dark .rec-time { color:#e2e8f0; }
 
         .step-box { border-radius:14px; padding:16px 18px; margin-bottom:12px; }
         .step-blue  { background:#eff6ff; border:1px solid #bfdbfe; }
-        .dark .step-blue  { background:rgba(59,130,246,0.07); border-color:rgba(59,130,246,0.2); }
         .step-amber { background:#fffbeb; border:1px solid #fde68a; }
-        .dark .step-amber { background:rgba(245,158,11,0.07); border-color:rgba(245,158,11,0.2); }
         .step-num {
             display:inline-flex; align-items:center; justify-content:center;
             width:20px; height:20px; border-radius:999px;
@@ -88,13 +71,9 @@
         .step-num-blue  { background:#3b82f6; color:white; }
         .step-num-amber { background:#f59e0b; color:white; }
         .step-title-blue  { font-size:13px; font-weight:700; color:#1d4ed8; margin-bottom:10px; }
-        .dark .step-title-blue  { color:#93c5fd; }
         .step-title-amber { font-size:13px; font-weight:700; color:#b45309; margin-bottom:6px; }
-        .dark .step-title-amber { color:#fcd34d; }
         .step-hint { font-size:12px; color:#92400e; margin-bottom:10px; line-height:1.55; }
-        .dark .step-hint { color:#fbbf24; }
         
-        /* Utility Buttons */
         .btn-gform {
             display:inline-flex; align-items:center; gap:8px;
             padding:9px 20px; border-radius:10px; font-size:13px; font-weight:700;
@@ -103,7 +82,6 @@
         }
         .btn-gform:hover { box-shadow:0 4px 16px rgba(59,130,246,0.4); transform:translateY(-1px); }
 
-        /* Modernized Recorder Buttons Fix */
         .btn-rec-start {
             display: inline-flex; align-items: center; justify-content: center; gap: 8px;
             padding: 12px 28px; border-radius: 14px; font-size: 13.5px; font-weight: 700;
@@ -125,29 +103,25 @@
         .btn-rec-repeat {
             display: inline-flex; align-items: center; justify-content: center; gap: 6px;
             padding: 12px 24px; border-radius: 14px; font-size: 13.5px; font-weight: 600;
-            background: rgba(255, 255, 255, 0.03); border: 1.5px solid rgba(148, 163, 184, 0.2); color: #e2e8f0;
+            background: #ffffff; border: 1.5px solid #cbd5e1; color: #334155;
             cursor: pointer; transition: all 0.15s;
         }
-        .btn-rec-repeat:hover { border-color: #f59e0b; color: #f59e0b; background: rgba(245, 158, 11, 0.03); }
+        .btn-rec-repeat:hover { border-color: #f59e0b; color: #d97706; background: #fffbeb; }
 
         .upload-hint {
             font-size:13px; color:#64748b; line-height:1.6;
             padding:11px 14px; background:#f8fafc;
-            border-radius:10px; border:1px dashed #e2e8f0;
+            border-radius:10px; border:1px dashed #cbd5e1;
             margin-bottom: 4px;
         }
-        .dark .upload-hint { background:rgba(255,255,255,0.03); border-color:rgba(255,255,255,0.1); color:#94a3b8; }
-        .upload-hint strong { color:#f59e0b; }
+        .upload-hint strong { color:#d97706; }
 
-        /* Custom File Upload Area */
         .custom-upload-btn {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 24px; border: 2px dashed #d1d5db; border-radius: 12px;
+            padding: 24px; border: 2px dashed #cbd5e1; border-radius: 12px;
             background: #fdfdfd; cursor: pointer; transition: all 0.2s ease-in-out;
         }
-        .dark .custom-upload-btn { background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.15); }
         .custom-upload-btn:hover { border-color: #f59e0b; background: #fffbeb; }
-        .dark .custom-upload-btn:hover { background: rgba(245, 158, 11, 0.05); }
 
         .action-bar {
             display:flex; gap:10px; align-items:center;
@@ -155,16 +129,15 @@
             border:1px solid #e2e8f0; border-radius:16px;
             justify-content: space-between;
         }
-        .dark .action-bar { background:rgba(255,255,255,0.03); border-color:rgba(255,255,255,0.07); }
         .btn-cancel {
             display:inline-flex; align-items:center;
             padding:9px 18px; border-radius:10px;
-            background:white; border:1.5px solid #e2e8f0;
+            background:white; border:1.5px solid #cbd5e1;
             color:#374151; font-size:13px; font-weight:600;
             text-decoration:none; transition:all 0.15s;
         }
-        .dark .btn-cancel { background:#1e293b; border-color:#334155; color:#e2e8f0; }
-        .btn-cancel:hover { border-color:#94a3b8; }
+        .btn-cancel:hover { border-color:#94a3b8; background:#f1f5f9; }
+        
         .btn-submit-primary {
             display:inline-flex; align-items:center; gap:6px;
             padding:9px 22px; border-radius:10px; font-size:13px; font-weight:700;
@@ -279,15 +252,15 @@
                     <button type="button"
                         wire:click="setMode('record')"
                         @click="resetRecorder()"
-                        class="flex-1 py-2 px-4 rounded-lg text-sm font-medium border transition
-                            {{ $this->mode === 'record' ? 'mode-tab-active bg-white border-white text-gray-900' : 'border-transparent text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                        class="flex-1 py-2 px-4 rounded-lg text-sm font-medium border transition text-gray-600
+                            {{ $this->mode === 'record' ? 'mode-tab-active bg-white border-slate-300 text-gray-900 font-bold' : 'border-transparent text-gray-500 hover:bg-slate-100' }}">
                         🎙️ Rekam Langsung
                     </button>
                     <button type="button"
                         wire:click="setMode('upload')"
                         @click="resetRecorder()"
-                        class="flex-1 py-2 px-4 rounded-lg text-sm font-medium border transition
-                            {{ $this->mode === 'upload' ? 'mode-tab-active bg-white border-white text-gray-900' : 'border-transparent text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                        class="flex-1 py-2 px-4 rounded-lg text-sm font-medium border transition text-gray-600
+                            {{ $this->mode === 'upload' ? 'mode-tab-active bg-white border-slate-300 text-gray-900 font-bold' : 'border-transparent text-gray-500 hover:bg-slate-100' }}">
                         📁 Upload File
                     </button>
                 </div>
@@ -404,7 +377,7 @@
                     @click="submitForm()"
                     x-bind:disabled="isRecording || (mode === 'record' && !hasRecording)"
                     x-bind:class="(isRecording || (mode === 'record' && !hasRecording))
-                        ? 'btn-submit-primary !bg-gray-200 !text-gray-400 !shadow-none !cursor-not-allowed'
+                        ? 'btn-submit-primary bg-gray-200! text-gray-400! shadow-none! cursor-not-allowed!'
                         : 'btn-submit-primary'"
                     class="btn-submit-primary">
                     {{ $this->submission?->status === 'rejected' ? '📤 Submit Ulang' : '📤 Kumpulkan Tugas' }}
@@ -414,7 +387,7 @@
             <script>
                 function recorderApp(taskType) {
                     return {
-                        taskType:      taskType,
+                        taskType:     taskType,
                         isRecording:   false,
                         hasRecording:  false,
                         cameraReady:   false,
