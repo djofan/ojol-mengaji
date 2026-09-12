@@ -1,4 +1,10 @@
-@extends('site.layout') @section('title', 'Kontak' ) @php($active='kontak' ) @section('extra-style')
+@extends('site.layout')
+
+@section('title', 'Kontak')
+
+@php($active = 'kontak')
+
+@section('extra-style')
 <style>
     .contact-grid {
         max-width: 900px;
@@ -51,62 +57,19 @@
         line-height: 1.5;
     }
 
-    .form-group {
-        margin-bottom: 1.25rem;
-    }
-
-    .form-label {
-        display: block;
-        font-size: 0.88rem;
-        font-weight: 700;
-        color: var(--ink);
-        margin-bottom: 0.5rem;
-    }
-
-    .form-input,
-    .form-select,
-    .form-textarea {
-        width: 100%;
-        padding: 0.8rem 1rem;
-        font-size: 0.9rem;
-        font-family: inherit;
-        background: var(--paper);
-        border: 1px solid var(--paper-line);
-        border-radius: 10px;
-        color: var(--ink);
-        outline: none;
-        transition: border-color 0.2s ease;
-    }
-
-    .form-input:focus,
-    .form-select:focus,
-    .form-textarea:focus {
-        border-color: var(--teal);
-    }
-
-    .form-textarea {
-        resize: vertical;
-        min-height: 120px;
-    }
-
-    .btn-submit {
-        display: inline-flex;
-        align-items: center;
+    .whatsapp-cta {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
         justify-content: center;
-        width: 100%;
-        padding: 0.9rem 1.5rem;
-        font-size: 0.95rem;
-        font-weight: 700;
-        color: #fff;
-        background: var(--teal);
-        border: none;
-        border-radius: 10px;
-        cursor: pointer;
-        transition: opacity 0.2s ease;
+        height: 100%;
+        gap: 1.25rem;
     }
 
-    .btn-submit:hover {
-        opacity: 0.9;
+    .whatsapp-cta p {
+        font-size: 0.94rem;
+        color: var(--ink-muted);
+        line-height: 1.65;
     }
 
     @media (max-width: 768px) {
@@ -147,7 +110,7 @@
                     </div>
                     <div>
                         <h3>Lokasi</h3>
-                        <p>Bekasi, Jawa Barat, Indonesia (LAZ Solidaritas Insan Peduli)</p>
+                        <p>Bogor, Jawa Barat, Indonesia (LAZ Solidaritas Insan Peduli)</p>
                     </div>
                 </div>
 
@@ -162,7 +125,7 @@
                     </div>
                     <div>
                         <h3>Email Resmi</h3>
-                        <p>support@ojolmengaji.com</p>
+                        <p>csojolmengaji@lazsip.or.id</p>
                     </div>
                 </div>
 
@@ -182,41 +145,23 @@
                 </div>
             </div>
 
-            <!-- Form Kirim Pesan -->
-            <div class="contact-card">
-                <h2 style="font-size: 1.15rem; font-weight: 700; color: var(--ink); margin-bottom: 1.5rem;">Kirim
-                    Pesan</h2>
-
-                <form action="#" method="POST">
-                    @csrf
-                    <div class="form-group">
-                        <label class="form-label">Nama Lengkap</label>
-                        <input type="text" name="name" class="form-input" required placeholder="Masukkan nama Anda">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Kode Akun / No HP</label>
-                        <input type="text" name="identifier" class="form-input" required placeholder="Cth: OJOL-XXXX">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Topik Kendala</label>
-                        <select name="topic" class="form-select">
-                            <option>Kendala Masuk / Kode Akun</option>
-                            <option>Setoran Hafalan</option>
-                            <option>Pendaftaran / Cara Bergabung</option>
-                            <option>Lainnya</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Pesan</label>
-                        <textarea name="message" class="form-textarea" required
-                            placeholder="Tuliskan kendala atau pertanyaan Anda..."></textarea>
-                    </div>
-
-                    <button type="submit" class="btn-submit">Kirim Pesan</button>
-                </form>
+            <!-- CTA WhatsApp -->
+            <div class="contact-card whatsapp-cta">
+                <div>
+                    <h2 style="font-size: 1.15rem; font-weight: 700; color: var(--ink); margin-bottom: 0.6rem;">Chat
+                        Langsung Lewat WhatsApp</h2>
+                    <p>Cara tercepat untuk pendaftaran akun baru, reset kode akun, kendala setoran, atau pertanyaan
+                        lainnya seputar program Ojol Mengaji.</p>
+                </div>
+                <a href="https://wa.me/628111186626" target="_blank" class="btn-primary">
+                    Chat via WhatsApp
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                        <path
+                            d="M20.52 3.449C12.831-3.984.106 1.407.101 11.893c0 2.096.549 4.14 1.595 5.945L0 24l6.335-1.652a11.85 11.85 0 0 0 5.723 1.472h.005c9.607 0 15.782-10.446 11.077-18.786a11.9 11.9 0 0 0-2.62-3.585zM12.063 21.785h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.005-8.4 9.132-13.65 16.442-9.454a10.947 10.947 0 0 1 3.643 3.669c4.198 7.313-1.02 16.679-9.201 16.677z" />
+                    </svg>
+                </a>
             </div>
 
         </div>
